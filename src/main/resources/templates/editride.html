@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Edit Ride</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}" />
+  <style>
+    body {
+        font-family: 'Segoe UI', sans-serif;
+        background-color: #f4f6f9;
+        padding: 30px;
+    }
+
+    .container {
+        max-width: 600px;
+        background-color: white;
+        margin: auto;
+        padding: 25px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+        border-radius: 12px;
+    }
+
+    h2 {
+        text-align: center;
+        color: #2c3e50;
+        margin-bottom: 20px;
+    }
+
+    label {
+        display: block;
+        margin-top: 12px;
+        font-weight: 600;
+        color: #34495e;
+    }
+
+    input[type="text"],
+    input[type="date"],
+    input[type="time"],
+    input[type="number"],
+    select {
+        width: 100%;
+        padding: 10px;
+        margin-top: 5px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        box-sizing: border-box;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .btn {
+        background-color: #2e86de;
+        color: white;
+        padding: 12px;
+        width: 100%;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        cursor: pointer;
+        margin-top: 20px;
+    }
+
+    .btn:hover {
+        background-color: #1b4f72;
+    }
+
+    .back-link {
+        display: block;
+        text-align: center;
+        margin-top: 15px;
+        color: #2980b9;
+        text-decoration: none;
+    }
+
+    .back-link:hover {
+        text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h2>Edit Your Ride</h2>
+
+  <!-- Form for editing ride -->
+  <form th:action="@{'/driver/editride/' + ${ride.id}}" method="post" th:object="${ride}">
+    <div class="form-group">
+      <label for="rideDate">Ride Date:</label>
+      <input type="date" id="rideDate" th:field="*{rideDate}" required />
+    </div>
+
+    <div class="form-group">
+      <label for="departureTime">Departure Time:</label>
+      <input type="time" id="departureTime" th:field="*{departureTime}" required />
+    </div>
+
+    <div class="form-group">
+      <label for="pickupLocation">Pickup Location:</label>
+      <input type="text" id="pickupLocation" th:field="*{pickupLocation}" required />
+    </div>
+
+    <div class="form-group">
+      <label for="seatsAvailable">Seats Available:</label>
+      <input type="number" id="seatsAvailable" th:field="*{seatsAvailable}" min="1" required />
+    </div>
+
+    <div class="form-group">
+      <label for="direction">Direction:</label>
+      <select id="direction" th:field="*{direction}" required>
+        <option value="TO_UNIVERSITY" th:selected="${ride.direction == 'TO_UNIVERSITY'}">To University</option>
+        <option value="FROM_UNIVERSITY" th:selected="${ride.direction == 'FROM_UNIVERSITY'}">From University</option>
+      </select>
+    </div>
+
+    <button type="submit" class="btn">Update Ride</button>
+  </form>
+
+  <a href="/driver/home" class="back-link">← Back to Home</a>
+</div>
+</body>
+</html>

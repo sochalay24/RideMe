@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Driver Setup</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-blue-50 flex items-center justify-center min-h-screen">
+<div class="bg-white shadow-lg rounded-xl p-8 w-full max-w-md">
+  <h1 class="text-2xl font-bold text-center mb-6">Driver Setup</h1>
+
+  <form th:action="@{/driver/setup}" method="post" class="space-y-4">
+    <div>
+      <label class="block text-sm font-semibold text-gray-700">Vehicle Type</label>
+      <input type="text" name="vehicleType" class="w-full mt-1 p-2 border rounded-md" th:value="${vehicleType}" required>
+    </div>
+    <div>
+      <label class="block text-sm font-semibold text-gray-700">Vehicle Number</label>
+      <input type="text" name="vehicleNumber" class="w-full mt-1 p-2 border rounded-md" th:value="${vehicleNumber}" required>
+    </div>
+    <div>
+      <label class="block text-sm font-semibold text-gray-700">Department</label>
+      <input type="text" name="department" class="w-full mt-1 p-2 border rounded-md" th:value="${department}" required>
+    </div>
+    <div>
+      <label class="block text-sm font-semibold text-gray-700">Phone Number</label>
+      <input type="tel" name="phoneNumber" class="w-full mt-1 p-2 border rounded-md" required placeholder="Enter phone number">
+    </div>
+    <button type="submit"
+            class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-md font-medium">
+      Save Profile
+    </button>
+  </form>
+
+  <!-- Button to use previously saved vehicle info -->
+  <form th:action="@{/driver/usepreviousinfo}" method="get" class="mt-4">
+    <button type="submit"
+            class="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded-md font-medium">
+      Use Previous Vehicle Info
+    </button>
+  </form>
+</div>
+</body>
+</html>

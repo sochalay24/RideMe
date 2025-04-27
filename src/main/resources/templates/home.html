@@ -1,0 +1,48 @@
+<!-- home.html -->
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="UTF-8">
+  <title>Home | RideMe</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen p-6">
+<div class="max-w-4xl mx-auto bg-white rounded-2xl shadow-lg p-6">
+  <h2 class="text-3xl font-bold text-blue-700 mb-4">Welcome, <span th:text="${name}">User</span>!</h2>
+  <p class="text-gray-600 text-lg mb-6">Role: <span th:text="${role}">Role</span></p>
+
+  <!-- DRIVER SECTION -->
+  <div th:if="${role == 'DRIVER'}" class="space-y-4">
+    <h3 class="text-xl font-semibold text-gray-800">Create a Ride</h3>
+    <form action="/driver/create" method="post" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <input type="date" name="rideDate" required class="p-2 border rounded-xl">
+      <input type="time" name="departureTime" required class="p-2 border rounded-xl">
+      <input type="text" name="pickupLocation" placeholder="Pickup Location" required class="p-2 border rounded-xl">
+      <input type="number" name="seatsAvailable" placeholder="Seats Available" required class="p-2 border rounded-xl min-w-0">
+      <select name="direction" required class="col-span-2 p-2 border rounded-xl">
+        <option value="" disabled selected>Select Direction</option>
+        <option value="TO_UNIVERSITY">From Location → University</option>
+        <option value="FROM_UNIVERSITY">From University → Location</option>
+      </select>
+      <button type="submit" class="col-span-2 bg-blue-600 text-white py-2 rounded-xl hover:bg-blue-700 transition">Post Ride</button>
+    </form>
+  </div>
+
+  <!-- PASSENGER SECTION -->
+  <div th:if="${role == 'PASSENGER'}" class="space-y-4">
+    <h3 class="text-xl font-semibold text-gray-800">Find a Ride</h3>
+    <form action="/passenger/request" method="post" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <input type="text" name="pickupLocation" placeholder="Pickup Location" required class="p-2 border rounded-xl">
+      <input type="date" name="date" required class="p-2 border rounded-xl">
+      <input type="number" name="seatsRequested" placeholder="Seats Requested" required class="p-2 border rounded-xl min-w-0">
+      <select name="direction" required class="col-span-2 p-2 border rounded-xl">
+        <option value="" disabled selected>Select Direction</option>
+        <option value="TO_UNIVERSITY">From Location → University</option>
+        <option value="FROM_UNIVERSITY">From University → Location</option>
+      </select>
+      <button type="submit" class="col-span-2 bg-green-600 text-white py-2 rounded-xl hover:bg-green-700 transition">Search Ride</button>
+    </form>
+  </div>
+</div>
+</body>
+</html>

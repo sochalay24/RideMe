@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Driver Home</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 font-sans min-h-screen p-6">
+<div class="max-w-4xl mx-auto bg-white p-8 shadow-md rounded-xl">
+
+  <h1 class="text-2xl font-bold mb-4">Welcome, <span th:text="${name}" class="text-blue-600">Driver</span></h1>
+
+  <!-- Latest Ride -->
+  <div th:if="${latestRide != null}" class="mb-8">
+    <h2 class="text-xl font-semibold mb-2 text-gray-700">Your Latest Ride</h2>
+    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+      <p><strong>Date:</strong> <span th:text="${latestRide.rideDate}"></span></p>
+      <p><strong>Time:</strong> <span th:text="${latestRide.departureTime}"></span></p>
+      <p><strong>Pickup Location:</strong> <span th:text="${latestRide.pickupLocation}"></span></p>
+      <p><strong>Direction:</strong> <span th:text="${latestRide.direction}"></span></p>
+      <p><strong>Vehicle Type:</strong> <span th:text="${latestRide.vehicleType}"></span></p>
+      <p><strong>Vehicle Number:</strong> <span th:text="${latestRide.vehicleNumber}"></span></p>
+      <p><strong>Seats Available:</strong> <span th:text="${latestRide.seatsAvailable}"></span></p>
+      <a th:href="@{'/driver/editride/' + ${latestRide.id}}"
+         class="inline-block mt-3 px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg">
+        Edit This Ride
+      </a>
+    </div>
+  </div>
+
+  <!-- Submit New Ride -->
+  <div>
+    <h2 class="text-xl font-semibold mb-2 text-gray-700">Submit a New Ride</h2>
+    <form th:action="@{/driver/submitride}" method="post" th:object="${driverRideForm}" class="space-y-4 bg-gray-50 p-6 rounded-lg border border-gray-200">
+      <div>
+        <label class="block text-gray-700 font-medium">Date</label>
+        <input type="date" th:field="*{rideDate}" required class="w-full px-3 py-2 border rounded-md">
+      </div>
+      <div>
+        <label class="block text-gray-700 font-medium">Departure Time</label>
+        <input type="time" th:field="*{departureTime}" required class="w-full px-3 py-2 border rounded-md">
+      </div>
+      <div>
+        <label class="block text-gray-700 font-medium">Pickup Location</label>
+        <input type="text" th:field="*{pickupLocation}" required class="w-full px-3 py-2 border rounded-md">
+      </div>
+      <div>
+        <label class="block text-gray-700 font-medium text-lg">Landmark</label>
+        <input type="text" th:field="*{landmark}" placeholder="Nearby known place"
+               class="w-full px-4 py-3 mt-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500">
+      </div>
+
+      <div>
+        <label class="block text-gray-700 font-medium">Direction</label>
+        <select th:field="*{direction}" required class="w-full px-3 py-2 border rounded-md">
+          <option value="TO_UNIVERSITY">To University</option>
+          <option value="FROM_UNIVERSITY">From University</option>
+        </select>
+      </div>
+      <div>
+        <label class="block text-gray-700 font-medium">Seats Available</label>
+        <input type="number" th:field="*{seatsAvailable}" min="1" required class="w-full px-3 py-2 border rounded-md">
+      </div>
+      <button type="submit"
+              class="w-full mt-4 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+        Submit Ride
+      </button>
+    </form>
+  </div>
+</div>
+</body>
+</html>

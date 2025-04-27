@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Driver Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-blue-50 min-h-screen py-10 px-6 relative">
+
+<!-- Logout Button -->
+<div class="absolute top-4 right-6">
+  <form th:action="@{/logout}" method="post">
+    <button type="submit"
+            class="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-md shadow">
+      Logout
+    </button>
+  </form>
+</div>
+
+<div class="max-w-4xl mx-auto">
+  <h1 class="text-3xl font-bold text-center text-blue-800 mb-8">Your Ride History</h1>
+
+  <!-- Handle No Rides -->
+  <div th:if="${#lists.isEmpty(rides)}" class="text-center text-gray-600">
+    No rides found. Start by submitting a new ride!
+  </div>
+
+  <!-- Display Rides -->
+  <div th:unless="${#lists.isEmpty(rides)}" class="grid grid-cols-1 gap-6">
+    <div th:each="ride : ${rides}" class="bg-white p-6 rounded-xl shadow-md border-l-4 border-blue-500 transition hover:shadow-lg">
+      <div class="flex justify-between items-center mb-2">
+        <h2 class="text-xl font-semibold text-blue-700">
+          <span th:text="${ride.rideDate}"></span> @
+          <span th:text="${ride.departureTime}"></span>
+        </h2>
+        <span class="text-sm font-medium bg-blue-100 text-blue-800 px-3 py-1 rounded-full"
+              th:text="${ride.direction == 'TO_UNIVERSITY' ? 'To University' : 'From University'}"></span>
+      </div>
+
+      <p class="text-gray-700 mb-1">
+        <strong>Pickup Location:</strong> <span th:text="${ride.pickupLocation}"></span>
+      </p>
+      <p class="text-gray-700 mb-1" th:if="${ride.landmark != null && !ride.landmark.isEmpty()}">
+        <strong>Landmark:</strong> <span th:text="${ride.landmark}"></span>
+      </p>
+      <p class="text-gray-700 mb-1">
+        <strong>Seats Available:</strong> <span th:text="${ride.seatsAvailable}"></span>
+      </p>
+      <p class="text-gray-700 mb-1">
+        <strong>Vehicle:</strong> <span th:text="${ride.vehicleType}"></span> -
+        <span th:text="${ride.vehicleNumber}"></span>
+      </p>
+
+      <!-- Show Delete Button for Future Rides -->
+      <div class="mt-4 text-right" th:if="${ride.rideDate >= T(java.time.LocalDate).now()}">
+        <form th:action="@{'/driver/deleteride/' + ${ride.id}}" method="post">
+          <button type="submit"
+                  class="bg-red-500 hover:bg-red-600 text-white text-sm font-semibold py-2 px-4 rounded-md transition">
+            Delete Ride
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Another Ride -->
+  <div class="text-center mt-10">
+    <a href="/driver/home"
+       class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded-md transition">
+      Add Another Ride
+    </a>
+  </div>
+</div>
+</body>
+</html>

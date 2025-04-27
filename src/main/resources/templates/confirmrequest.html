@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Ride Confirmation</title>
+  <meta charset="UTF-8">
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #eaf2f8;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .box {
+      background-color: white;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    h2 {
+      color: #27ae60;
+    }
+    p {
+      color: #2c3e50;
+      margin: 20px 0;
+    }
+    a {
+      display: inline-block;
+      margin-top: 20px;
+      text-decoration: none;
+      background-color: #3498db;
+      color: white;
+      padding: 12px 20px;
+      border-radius: 6px;
+    }
+    a:hover {
+      background-color: #2980b9;
+    }
+  </style>
+</head>
+<body>
+<div class="box">
+  <h2>Ride Confirmed!</h2>
+  <p>Your ride request has been successfully confirmed.</p>
+  <a th:href="@{/passenger/home}">Return to Dashboard</a>
+</div>
+</body>
+</html>

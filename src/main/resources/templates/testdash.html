@@ -1,0 +1,201 @@
+<!--<!DOCTYPE html>-->
+<!--<html xmlns:th="http://www.thymeleaf.org">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <title>Dashboard - RideMe</title>-->
+<!--    <link rel="stylesheet" th:href="@{/css/dashboard.css}">-->
+<!--    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">-->
+<!--    <style>-->
+<!--        body {-->
+<!--            font-family: 'Poppins', sans-serif;-->
+<!--            margin: 0;-->
+<!--            padding: 0;-->
+<!--            background: linear-gradient(135deg, #89f7fe 0%, #66a6ff 100%);-->
+<!--            min-height: 100vh;-->
+<!--            animation: backgroundMove 15s ease infinite;-->
+<!--        }-->
+
+<!--        @keyframes backgroundMove {-->
+<!--            0% {background-position: 0% 50%;}-->
+<!--            50% {background-position: 100% 50%;}-->
+<!--            100% {background-position: 0% 50%;}-->
+<!--        }-->
+
+<!--        header {-->
+<!--            background: rgba(255, 255, 255, 0.3);-->
+<!--            padding: 20px;-->
+<!--            color: #333;-->
+<!--            text-align: center;-->
+<!--            font-size: 28px;-->
+<!--            font-weight: 700;-->
+<!--            backdrop-filter: blur(10px);-->
+<!--            border-bottom: 2px solid #ffffff50;-->
+<!--            border-bottom-left-radius: 30px;-->
+<!--            border-bottom-right-radius: 30px;-->
+<!--            animation: fadeIn 1.2s ease;-->
+<!--        }-->
+
+<!--        .container {-->
+<!--            display: grid;-->
+<!--            grid-template-columns: 1fr 2fr 1fr;-->
+<!--            gap: 30px;-->
+<!--            margin: 40px;-->
+<!--            animation: fadeInUp 1.5s ease;-->
+<!--        }-->
+
+<!--        .card {-->
+<!--            background: rgba(255, 255, 255, 0.85);-->
+<!--            padding: 25px;-->
+<!--            border-radius: 20px;-->
+<!--            box-shadow: 0 8px 20px rgba(0,0,0,0.1);-->
+<!--            transition: transform 0.3s, box-shadow 0.3s;-->
+<!--        }-->
+
+<!--        .card:hover {-->
+<!--            transform: translateY(-8px);-->
+<!--            box-shadow: 0 12px 30px rgba(0,0,0,0.2);-->
+<!--        }-->
+
+<!--        .welcome {-->
+<!--            font-size: 30px;-->
+<!--            font-weight: 700;-->
+<!--            margin-bottom: 15px;-->
+<!--        }-->
+
+<!--        .quote {-->
+<!--            font-size: 18px;-->
+<!--            color: #555;-->
+<!--            margin-bottom: 25px;-->
+<!--            font-style: italic;-->
+<!--        }-->
+
+<!--        .button {-->
+<!--            display: inline-block;-->
+<!--            margin: 10px 0;-->
+<!--            padding: 12px 22px;-->
+<!--            background-color: #4CAF50;-->
+<!--            color: white;-->
+<!--            border: none;-->
+<!--            border-radius: 12px;-->
+<!--            font-size: 16px;-->
+<!--            cursor: pointer;-->
+<!--            text-decoration: none;-->
+<!--            transition: background 0.3s, transform 0.2s;-->
+<!--        }-->
+
+<!--        .button:hover {-->
+<!--            background-color: #43a047;-->
+<!--            transform: scale(1.05);-->
+<!--        }-->
+
+<!--        ul {-->
+<!--            list-style: none;-->
+<!--            padding: 0;-->
+<!--            margin: 0;-->
+<!--        }-->
+
+<!--        li {-->
+<!--            margin-bottom: 10px;-->
+<!--            font-size: 16px;-->
+<!--            color: #333;-->
+<!--        }-->
+
+<!--        .stats {-->
+<!--            font-size: 18px;-->
+<!--            font-weight: 600;-->
+<!--            color: #333;-->
+<!--        }-->
+
+<!--        @keyframes fadeIn {-->
+<!--            from {opacity: 0;}-->
+<!--            to {opacity: 1;}-->
+<!--        }-->
+
+<!--        @keyframes fadeInUp {-->
+<!--            from {-->
+<!--                opacity: 0;-->
+<!--                transform: translateY(20px);-->
+<!--            }-->
+<!--            to {-->
+<!--                opacity: 1;-->
+<!--                transform: translateY(0);-->
+<!--            }-->
+<!--        }-->
+<!--    </style>-->
+<!--</head>-->
+
+<!--<body>-->
+<!--<header>-->
+<!--    RideMe - Your Daily Carpool Companion 🚗-->
+<!--</header>-->
+
+<!--<div class="container">-->
+<!--    &lt;!&ndash; Left Column &ndash;&gt;-->
+<!--    <div class="card">-->
+<!--        <h2>👤 Profile Overview</h2>-->
+<!--        <p><strong>Name:</strong> <span th:text="${user.name}">John Doe</span></p>-->
+<!--        <p><strong>Department:</strong> <span th:text="${user.department}">Computer Science</span></p>-->
+<!--        <p><strong>Last Role:</strong> <span th:text="${user.lastRole}">Driver</span></p>-->
+<!--        <p><strong>Vehicle:</strong> <span th:text="${user.vehicleType}">Sedan</span> - <span th:text="${user.vehicleNumber}">MH12AB1234</span></p>-->
+<!--        <a class="button" th:href="@{/profile/edit}">Edit Profile</a>-->
+<!--    </div>-->
+
+<!--    &lt;!&ndash; Center Column &ndash;&gt;-->
+<!--    <div class="card">-->
+<!--        <div class="welcome">-->
+<!--            Welcome back, <span th:text="${user.name}">John</span>! 🌟-->
+<!--        </div>-->
+<!--        <div class="quote">-->
+<!--            "Every journey begins with a single ride."-->
+<!--        </div>-->
+
+<!--        <div>-->
+<!--            <h3>Today's Ride Status:</h3>-->
+<!--            <p th:if="${todayRide == null}">No ride scheduled yet. Let’s plan!</p>-->
+<!--            <p th:if="${todayRide != null}">-->
+<!--                You are <span th:text="${todayRide.role}">Driving</span> today at-->
+<!--                <span th:text="${todayRide.time}">9:00 AM</span> from-->
+<!--                <span th:text="${todayRide.pickupLocation}">City Center</span>.-->
+<!--            </p>-->
+<!--            <a class="button" th:href="@{/selectrole}">Set Up Ride</a>-->
+<!--        </div>-->
+
+<!--        <div style="margin-top: 30px;">-->
+<!--            <h3>Recent Rides:</h3>-->
+<!--            <ul>-->
+<!--                <li th:each="ride : ${recentRides}">-->
+<!--                    <span th:text="${ride.date}">Apr 26</span> - -->
+<!--                    <span th:text="${ride.pickupLocation}">City Mall</span> to-->
+<!--                    <span th:text="${ride.destination}">University</span>-->
+<!--                    (<span th:text="${ride.status}">Completed</span>)-->
+<!--                </li>-->
+<!--            </ul>-->
+<!--        </div>-->
+<!--    </div>-->
+
+<!--    &lt;!&ndash; Right Column &ndash;&gt;-->
+<!--    <div class="card">-->
+<!--        <h2>⚡ Quick Actions</h2>-->
+<!--        <a class="button" th:href="@{/selectrole(driver)}">Drive Today</a>-->
+<!--        <a class="button" th:href="@{/selectrole(passenger)}">Ride as Passenger</a>-->
+<!--        <a class="button" th:href="@{/rides/history}">Ride History</a>-->
+
+<!--        <div style="margin-top: 30px;">-->
+<!--            <h3>📣 Announcements</h3>-->
+<!--            <ul>-->
+<!--                <li>🚧 Site maintenance May 2nd</li>-->
+<!--                <li>🎉 5000+ rides completed!</li>-->
+<!--            </ul>-->
+<!--        </div>-->
+
+<!--        <div style="margin-top: 30px;">-->
+<!--            <h3>🌎 Live Stats</h3>-->
+<!--            <p class="stats">Active Drivers: <span th:text="${liveStats.drivers}">25</span></p>-->
+<!--            <p class="stats">Active Passengers: <span th:text="${liveStats.passengers}">48</span></p>-->
+<!--            <p class="stats">Matches for You: <span th:text="${liveStats.matches}">3</span></p>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
+
+<!--</body>-->
+<!--</html>-->

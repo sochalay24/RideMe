@@ -1,0 +1,43 @@
+<!-- templates/driver-details.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Ride Details</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-green-50 flex items-center justify-center min-h-screen">
+<div class="bg-white shadow-lg rounded-xl p-8 w-full max-w-md">
+  <h1 class="text-2xl font-bold text-center mb-6">Enter Ride Details</h1>
+  <form th:action="@{/driver/submit-ride}" method="post" class="space-y-4">
+    <div>
+      <label class="block text-sm font-semibold text-gray-700">Ride Date</label>
+      <input type="date" name="rideDate" class="w-full mt-1 p-2 border rounded-md" required>
+    </div>
+    <div>
+      <label class="block text-sm font-semibold text-gray-700">Departure Time</label>
+      <input type="time" name="departureTime" class="w-full mt-1 p-2 border rounded-md" required>
+    </div>
+    <div>
+      <label class="block text-sm font-semibold text-gray-700">Pickup Location</label>
+      <input type="text" name="pickupLocation" class="w-full mt-1 p-2 border rounded-md" required>
+    </div>
+    <div>
+      <label class="block text-sm font-semibold text-gray-700">Seats Available</label>
+      <input type="number" name="seatsAvailable" min="1" class="w-full mt-1 p-2 border rounded-md" required>
+    </div>
+    <div>
+      <label class="block text-sm font-semibold text-gray-700">Direction</label>
+      <select name="direction" class="w-full mt-1 p-2 border rounded-md">
+        <option value="TO_UNIVERSITY">From Location to University</option>
+        <option value="FROM_UNIVERSITY">From University to Location</option>
+      </select>
+    </div>
+    <button type="submit"
+            class="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded-md font-medium">
+      Submit Ride
+    </button>
+  </form>
+</div>
+</body>
+</html>

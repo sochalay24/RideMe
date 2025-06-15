@@ -81,50 +81,88 @@ public class PassengerController {
 
 
     // Confirm ride request from available search results
-    @PostMapping("/confirmrequest")
+    @PostMapping("/confirmride")
     public String confirmRideRequest(@RequestParam Long rideId,
                                      @RequestParam int seatsRequested,
-                                     @RequestParam String phoneNumber, // Add phone number to the request
-                                     Principal principal) {
+                                     Principal principal,
+                                     Model model) {
+
         User user = userRepo.findByUsername(principal.getName()).orElseThrow();
-
         Optional<Driver> rideOpt = driverRepo.findById(rideId);
-        if (rideOpt.isEmpty()) {
-            return "redirect:/passenger/home?error=ride-not-found";
+
+        if (rideOpt.isPresent()) {
+            Driver ride = rideOpt.get();
+            int updatedSeats = ride.getSeatsAvailable() - seatsRequested;
+
+            if (updatedSeats >= 0) {
+                ride.setSeatsAvailable(updatedSeats);
+                driverRepo.save(ride);
+
+                // Save passenger request
+                Passenger passenger = new Passenger();
+                passenger.setUser(user);
+                passenger.setPickupLocation(ride.getPickupLocation());
+                passenger.setDate(ride.getRideDate());
+                passenger.setSeatsRequested(seatsRequested);
+                passenger.setDirection(ride.getDirection());
+
+                passengerRepo.save(passenger);
+
+                // Details for emails
+                String passengerPhone = user.getPhoneNumber();
+                String passengerName = user.getName();
+                String passengerEmail = user.getEmail();
+                String driverName = ride.getUser().getName();
+                String driverEmail = ride.getUser().getEmail();
+                String driverPhone = ride.getUser().getPhoneNumber();
+
+                // Combine location + landmark if available
+                String fullLocation = ride.getPickupLocation();
+                if (ride.getLandmark() != null && !ride.getLandmark().isBlank()) {
+                    fullLocation += ", " + ride.getLandmark();
+                }
+
+// Encode for Google Maps link
+                String googleMapsLink = "https://www.google.com/maps/search/?api=1&query=" + fullLocation.replace(" ", "+");
+
+                String rideDetails = "Ride Date: " + ride.getRideDate() +
+                        "\nDeparture Time: " + ride.getDepartureTime() +
+                        "\nPickup Location: " + ride.getPickupLocation() +
+                        (ride.getLandmark() != null && !ride.getLandmark().isBlank() ? " (" + ride.getLandmark() + ")" : "") +
+                        "\nMaps Link: " + googleMapsLink +
+                        "\nSeats Booked: " + seatsRequested +
+                        "\nVehicle: " + ride.getVehicleType() + " " + ride.getVehicleNumber();
+
+
+                // Email to Driver
+                mailService.sendConfirmationEmail(driverEmail, passengerName, passengerPhone, rideDetails);
+
+                // Email to
+                String mapsLink = "https://www.google.com/maps/search/?api=1&query=" + ride.getPickupLocation().replace(" ", "+");
+                String passengerEmailSubject = "Ride Confirmed: Details of Your Ride with " + driverName;
+                String passengerEmailBody = "Hi " + passengerName + ",\n\n" +
+                        "Your ride has been successfully confirmed. Here are the details:\n\n" +
+                        rideDetails +
+                        "\nDriver: " + driverName +
+                        "\nLocation Link: " + mapsLink +
+                        "\nDriver Contact: " + driverEmail + "\n\n" +
+                        "Thank you for using RideMe!";
+
+                mailService.sendMail( passengerEmail, driverName, driverPhone, rideDetails);
+
+                model.addAttribute("ride", ride);
+                model.addAttribute("seatsRequested", seatsRequested);
+
+                return "confirmride";
+            } else {
+                model.addAttribute("message", "Not enough seats available.");
+                return "searchresults";
+            }
         }
 
-        Driver ride = rideOpt.get();
-
-        if (ride.getSeatsAvailable() < seatsRequested) {
-            return "redirect:/passenger/home?error=not-enough-seats";
-        }
-
-        // Decrease available seats
-        int updatedSeats = ride.getSeatsAvailable() - seatsRequested;
-        ride.setSeatsAvailable(updatedSeats);
-
-        if (updatedSeats == 0) {
-            driverRepo.delete(ride); // Remove the ride if no seats left
-        } else {
-            driverRepo.save(ride); // Otherwise just update the count
-        }
-
-        // Save confirmed passenger request with phone number
-        Passenger passenger = new Passenger();
-        passenger.setUser(user);
-        passenger.setPickupLocation(ride.getPickupLocation());
-        passenger.setDate(ride.getRideDate());
-        passenger.setSeatsRequested(seatsRequested);
-        passenger.setDirection(ride.getDirection());
-        passenger.setPhoneNumber(phoneNumber); // Store the passenger's phone number
-
-        passengerRepo.save(passenger);
-
-        return "redirect:/passenger/home?success=confirmed";
+        return "redirect:/passenger/home?error=ride-not-found";
     }
 
-    // Show all available rides
-    // Show all available rides (future rides with available seats)
     @GetMapping("/rides/available")
     public String showAllAvailableRides(Model model) {
         LocalDate today = LocalDate.now();  // Get today's date
@@ -158,62 +196,5 @@ public class PassengerController {
         return "searchresults";
     }
 
-    @PostMapping("/confirmride")
-    public String confirmRideRequest(@RequestParam Long rideId,
-                                     @RequestParam int seatsRequested,
-                                     Principal principal,
-                                     Model model) {
-
-        User user = userRepo.findByUsername(principal.getName()).orElseThrow();
-        Optional<Driver> rideOpt = driverRepo.findById(rideId);
-
-        if (rideOpt.isPresent()) {
-            Driver ride = rideOpt.get();
-            int updatedSeats = ride.getSeatsAvailable() - seatsRequested;
-
-            if (updatedSeats >= 0) {
-                ride.setSeatsAvailable(updatedSeats);
-                driverRepo.save(ride);
-
-                // Save passenger request
-                Passenger passenger = new Passenger();
-                passenger.setUser(user);
-                passenger.setPickupLocation(ride.getPickupLocation());
-                passenger.setDate(ride.getRideDate());
-                passenger.setSeatsRequested(seatsRequested);
-                passenger.setDirection(ride.getDirection());
-
-
-                passengerRepo.save(passenger);
-
-                String passengerPhone = user.getPhoneNumber();
-                String passengerName = user.getName();
-                String driverEmail = ride.getUser().getEmail();
-
-                // Email content
-                String rideDetails = "Ride Date: " + ride.getRideDate() +
-                        "\nDeparture Time: " + ride.getDepartureTime() +
-                        "\nPickup Location: " + ride.getPickupLocation() +
-                        "\nSeats Available: " + ride.getSeatsAvailable() +
-                        "\nVehicle: " + ride.getVehicleType() + " " + ride.getVehicleNumber() +
-                        "\nPassenger Phone: " + passengerPhone;  // <-- 📱 Use from request
-
-              
-
-                mailService.sendConfirmationEmail(driverEmail, passengerName, passengerPhone, rideDetails);
-
-
-                model.addAttribute("ride", ride);
-                model.addAttribute("seatsRequested", seatsRequested);
-
-                return "confirmride";
-            } else {
-                model.addAttribute("message", "Not enough seats available.");
-                return "searchresults";
-            }
-        }
-
-        return "redirect:/passenger/home?error=ride-not-found";
-    }
 
 }
